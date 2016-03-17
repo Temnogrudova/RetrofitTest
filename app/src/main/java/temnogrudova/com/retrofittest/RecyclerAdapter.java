@@ -10,8 +10,16 @@ import java.util.ArrayList;
 /**
  * Created by 123 on 05.02.2016.
  */
+
+/**
+ * Класс адаптера наследуется от RecyclerView.Adapter
+ */
 public class RecyclerAdapter extends RecyclerView.Adapter {
     ArrayList<Post> myArray;
+
+    /**
+     * Создание новых View и ViewHolder элемента списка, которые впоследствии могут переиспользоваться.
+     */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pattern, parent, false);
@@ -22,6 +30,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
         this.myArray = myArray;
     }
 
+    /**
+     * Заполнение визуальных компонентов View данными из элемента списка
+     */
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder viewHolder = (ItemViewHolder) holder;
