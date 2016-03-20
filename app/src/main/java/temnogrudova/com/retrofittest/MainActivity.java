@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -52,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String API_URL = "http://jsonplaceholder.typicode.com";
     RecyclerView twitterMessages;
+    ArrayList<Post> items;
+
+    private boolean mRotated;
+    Bundle savedInstanceState = null;
     /*Asynchronous in Retrofit
     Описание запросов для retrofit-а
 
@@ -72,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
+
         setContentView(R.layout.main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -168,6 +175,13 @@ public class MainActivity extends AppCompatActivity {
         twitterMessages = (RecyclerView)findViewById(R.id.myList);
         twitterMessages.setLayoutManager(new LinearLayoutManager(this));
 
+        //change orientation
+        items = (ArrayList<Post>) getLastCustomNonConfigurationInstance();
+        if (items!=null){
+            RecyclerAdapter recyclerAdapter = new RecyclerAdapter(items);
+            twitterMessages.setAdapter(recyclerAdapter);
+        }
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 repos.enqueue(new Callback<List<Post>>() {
                     @Override
                     public void onResponse(Response<List<Post>> response) {
-                        ArrayList<Post> items = (ArrayList<Post>) response.body();
+                       items = (ArrayList<Post>) response.body();
 
                         RecyclerAdapter recyclerAdapter = new RecyclerAdapter(items);
                         twitterMessages.setAdapter(recyclerAdapter);
@@ -229,4 +243,10 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return items;
+    }
+
 }
